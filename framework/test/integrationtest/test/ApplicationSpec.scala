@@ -214,6 +214,31 @@ class ApplicationSpec extends Specification {
         }
       }
     }
+    
+    "return an Action with a source of" in {
+      import play.api.mvc._
+      val application = FakeApplication()
+      running(application) {
+        val server = FakeServer(FakeApplicationProvider(application))
+        /*
+	      "'system' for a bad url" in {
+		      
+		        server.getHandlerFor(FakeRequest(GET, "badurl")) must beLike {
+		          case Right((action:Action[_], app)) => action.source must beEqualTo("system")
+		      }
+	      }
+	    */
+	      "'application' for a valid url" in {
+        	val url = controllers.routes.Application.index().url
+		        server.getHandlerFor(FakeRequest(GET, url)) must beLike {
+		          //case Right((action:Action[_], app)) => action.source must beEqualTo("application")
+		          case Right((action:Action[_], app)) if action.source == "application" => ok
+		          case Right((action:Action[_], app)) if action.source == "system" => ko
+		        }
+		  }
+      }
+    }
+
 
   }
 

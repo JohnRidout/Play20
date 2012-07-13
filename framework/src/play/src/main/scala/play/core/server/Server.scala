@@ -58,7 +58,7 @@ trait Server {
       try {
         applicationProvider.get.right.map { application =>
           val maybeAction = application.global.onRouteRequest(request)
-          (maybeAction.getOrElse(Action(BodyParsers.parse.empty)(_ => application.global.onHandlerNotFound(request))), application)
+          (maybeAction.getOrElse(Action.system(_ => application.global.onHandlerNotFound(request))), application)
         }
       } catch {
         case e => Left(e)

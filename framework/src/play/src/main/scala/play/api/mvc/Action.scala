@@ -46,6 +46,8 @@ class HandlerRef[T](callValue: => T, handlerDef: play.core.Router.HandlerDef)(im
  * @tparam A the type of the request body
  */
 trait Action[A] extends (Request[A] => Result) with Handler {
+    
+  val source = "application"
 
   /**
    * Type of the request body.
@@ -200,6 +202,17 @@ trait ActionBuilder {
    */
   def apply(block: => Result): Action[AnyContent] = apply(_ => block)
 
+  def system(block: Request[Option[Any]] => Result): Action[Option[Any]] = new Action[Option[Any]] {
+    override val source = "system"
+    def parser = BodyParsers.parse.empty
+    def apply(ctx: Request[Option[Any]]) = block(ctx)
+  }
+  
+  def asset(block: Request[AnyContent] => Result): Action[AnyContent] = new Action[AnyContent] {
+    override val source = "asset"
+    def parser = BodyParsers.parse.anyContent
+    def apply(ctx: Request[AnyContent]) = block(ctx)
+  }
 }
 
 /**

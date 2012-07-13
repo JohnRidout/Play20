@@ -1202,7 +1202,7 @@ object Router {
 
     //
 
-    def badRequest(error: String) = Action { request =>
+    def badRequest(error: String) = Action.system { request =>
       play.api.Play.maybeApplication.map(_.global.onBadRequest(request, error)).getOrElse(play.api.DefaultGlobal.onBadRequest(request, error))
     }
 

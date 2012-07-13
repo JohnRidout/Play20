@@ -154,3 +154,18 @@ case class FakeApplication(
   }
 
 }
+
+import play.core.ApplicationProvider
+
+case class FakeApplicationProvider(application: FakeApplication) extends ApplicationProvider {
+  def path = application.path
+  def get = Right(application)
+}
+
+import play.api._
+import play.core.server._
+
+case class FakeServer(fakeApplicationProvider: ApplicationProvider) extends Server {
+  def applicationProvider = fakeApplicationProvider
+  val mode = Mode.Test
+}
